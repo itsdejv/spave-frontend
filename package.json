@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "gen-api": "dotenv -e .env -- sh -c 'npx openapi-typescript http://localhost:3000/swagger-json --output ./src/types/api.ts --export-all'"
+    "gen-api": "openapi-ts"
   },
   "dependencies": {
     "keycloak-js": "^26.2.2",
