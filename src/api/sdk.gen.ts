@@ -4,8 +4,12 @@ import { client } from './client.gen';
 import type {
   CreateTransactionCategoryData,
   CreateTransactionCategoryResponses,
+  CreateTransactionData,
+  CreateTransactionResponses,
+  GetTransactionData,
   GetTransactionGategoryData,
   GetTransactionGategoryResponses,
+  GetTransactionResponses,
 } from './types.gen';
 
 export type Options<
@@ -25,11 +29,31 @@ export type Options<
   meta?: Record<string, unknown>;
 };
 
+export const getTransaction = <ThrowOnError extends boolean = false>(
+  options: Options<GetTransactionData, ThrowOnError>,
+) =>
+  (options.client ?? client).get<GetTransactionResponses, unknown, ThrowOnError>({
+    url: '/transactions/{id}',
+    ...options,
+  });
+
+export const createTransaction = <ThrowOnError extends boolean = false>(
+  options: Options<CreateTransactionData, ThrowOnError>,
+) =>
+  (options.client ?? client).post<CreateTransactionResponses, unknown, ThrowOnError>({
+    url: '/transactions',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
 export const getTransactionGategory = <ThrowOnError extends boolean = false>(
   options: Options<GetTransactionGategoryData, ThrowOnError>,
 ) =>
   (options.client ?? client).get<GetTransactionGategoryResponses, unknown, ThrowOnError>({
-    url: '/categories/{id}',
+    url: '/transaction-categories/{id}',
     ...options,
   });
 
@@ -37,7 +61,7 @@ export const createTransactionCategory = <ThrowOnError extends boolean = false>(
   options: Options<CreateTransactionCategoryData, ThrowOnError>,
 ) =>
   (options.client ?? client).post<CreateTransactionCategoryResponses, unknown, ThrowOnError>({
-    url: '/categories',
+    url: '/transaction-categories',
     ...options,
     headers: {
       'Content-Type': 'application/json',

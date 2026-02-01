@@ -2,12 +2,22 @@
 import { type DefaultError, type UseMutationOptions, queryOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { type Options, createTransactionCategory, getTransactionGategory } from '../sdk.gen';
+import {
+  type Options,
+  createTransaction,
+  createTransactionCategory,
+  getTransaction,
+  getTransactionGategory,
+} from '../sdk.gen';
 import type {
   CreateTransactionCategoryData,
   CreateTransactionCategoryResponse,
+  CreateTransactionData,
+  CreateTransactionResponse,
+  GetTransactionData,
   GetTransactionGategoryData,
   GetTransactionGategoryResponse,
+  GetTransactionResponse,
 } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
@@ -47,6 +57,48 @@ const createQueryKey = <TOptions extends Options>(
     params.query = options.query;
   }
   return [params];
+};
+
+export const getTransactionQueryKey = (options: Options<GetTransactionData>) =>
+  createQueryKey('getTransaction', options);
+
+export const getTransactionOptions = (options: Options<GetTransactionData>) =>
+  queryOptions<
+    GetTransactionResponse,
+    DefaultError,
+    GetTransactionResponse,
+    ReturnType<typeof getTransactionQueryKey>
+  >({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await getTransaction({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: getTransactionQueryKey(options),
+  });
+
+export const createTransactionMutation = (
+  options?: Partial<Options<CreateTransactionData>>,
+): UseMutationOptions<CreateTransactionResponse, DefaultError, Options<CreateTransactionData>> => {
+  const mutationOptions: UseMutationOptions<
+    CreateTransactionResponse,
+    DefaultError,
+    Options<CreateTransactionData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await createTransaction({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
 };
 
 export const getTransactionGategoryQueryKey = (options: Options<GetTransactionGategoryData>) =>

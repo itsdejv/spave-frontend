@@ -4,11 +4,64 @@ export type ClientOptions = {
   baseUrl: `${string}://${string}/api` | (string & {});
 };
 
-export type TransactionCategoryCreateInput = {
-  userId: number;
-  parentId: number;
+export type CreateTransactionRequest = {
   name: string;
+  amount: number;
+  transactionCategoryId?: number;
 };
+
+export type CreateCategoryRequest = {
+  name: string;
+  amount: number;
+  neccessary?: boolean;
+};
+
+export type GetTransactionData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/transactions/{id}';
+};
+
+export type GetTransactionResponses = {
+  /**
+   * Ok
+   */
+  200: {
+    userId: number;
+    parentId: number;
+    name: string;
+    id: number;
+  };
+};
+
+export type GetTransactionResponse = GetTransactionResponses[keyof GetTransactionResponses];
+
+export type CreateTransactionData = {
+  body: CreateTransactionRequest;
+  path?: never;
+  query?: never;
+  url: '/transactions';
+};
+
+export type CreateTransactionResponses = {
+  /**
+   * Ok
+   */
+  200: {
+    neccessary: boolean;
+    transactionCategoryId: number;
+    amount: number;
+    userId: number;
+    name: string;
+    id: number;
+  };
+};
+
+export type CreateTransactionResponse =
+  CreateTransactionResponses[keyof CreateTransactionResponses];
 
 export type GetTransactionGategoryData = {
   body?: never;
@@ -16,7 +69,7 @@ export type GetTransactionGategoryData = {
     id: number;
   };
   query?: never;
-  url: '/categories/{id}';
+  url: '/transaction-categories/{id}';
 };
 
 export type GetTransactionGategoryResponses = {
@@ -35,10 +88,10 @@ export type GetTransactionGategoryResponse =
   GetTransactionGategoryResponses[keyof GetTransactionGategoryResponses];
 
 export type CreateTransactionCategoryData = {
-  body: TransactionCategoryCreateInput;
+  body: CreateCategoryRequest;
   path?: never;
   query?: never;
-  url: '/categories';
+  url: '/transaction-categories';
 };
 
 export type CreateTransactionCategoryResponses = {
